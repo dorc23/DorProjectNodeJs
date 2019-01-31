@@ -1,7 +1,7 @@
 
 const express = require('express');
 const app = express();
-const Joi = require('joi');
+const Joi = require('joi'); // validate input
 
 //to parsing up json object in the body of the request
 app.use(express.json());
@@ -18,7 +18,7 @@ app.get('/api/genres' , (req,res) =>{
 
 app.get('/api/genres/:id' , (req,res) =>{
 
-    const genre  = genres.find(c => c.id === parseInt(req.params.id));
+    const genre  = genres.find(g => g.id === parseInt(req.params.id));
     if(!genre) // 404 not found
         return res.status(404).send(`Genre with id ${req.params.id} didnt exist!`);
     return res.send(genre);
@@ -38,6 +38,34 @@ app.post('/api/genres' , (req,res) => {
     genres.push(genre);
     res.send(genre);
 
+});
+
+app.put('/api/genres/:id',(req,res) => {
+
+    const genre = genres.find((g) => g.id === parseInt(req.params.id));
+    if(!genre)  // 404 not found
+        return res.status(404).send(`Genre with id ${req.params.id} didnt exist!`);
+
+    // object destructuring is if we want just one property from an object
+    const {error} = validate(req.body);
+    if(error) // 400 bad request
+        return res.status(400).send(error.details[0].message);
+
+    genre.name = req.body.name;
+    res.send(genre);
+
+});
+
+app.delete('/api/genres/:id',(req,res) => {
+
+    const genre = genres.find((g) => g.id === parseInt(req.params.id));
+    if(!genre)  // 404 not found
+        return res.status(404).send(`Genre with id ${req.params.id} didnt exist!`);
+
+    const index = genres.indexOf(genre);
+    genres.splice(index,1);
+
+    res.send(genre);
 });
 
 
