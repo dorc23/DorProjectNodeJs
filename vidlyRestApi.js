@@ -1,13 +1,31 @@
 
 const express = require('express');
 const app = express();
+
+const config = require('config');
+const morgan = require('morgan');
+const helmet = require('helmet');
 const Joi = require('joi'); // validate input
 const Logger = require('./logger');
 const Authentication = require('./authentication');
+
+
+//configuration
+console.log('Name App : ' + config.get('name'));
+console.log('password : ' + config.get('password'));
+
+if(app.get('env')==='development')
+    app.use(morgan('tiny'))
+
 //to parsing up json object in the body of the request
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(express.static('public '));
 app.use(Logger);
 app.use(Authentication);
+app.use(helmet());
+
+
 
 const genres = [
     {id:1,name:'Action'},
