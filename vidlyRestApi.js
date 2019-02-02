@@ -2,9 +2,12 @@
 const express = require('express');
 const app = express();
 const Joi = require('joi'); // validate input
-
+const Logger = require('./logger');
+const Authentication = require('./authentication');
 //to parsing up json object in the body of the request
 app.use(express.json());
+app.use(Logger);
+app.use(Authentication);
 
 const genres = [
     {id:1,name:'Action'},
